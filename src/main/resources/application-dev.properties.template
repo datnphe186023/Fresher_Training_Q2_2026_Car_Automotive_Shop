@@ -1,0 +1,15 @@
+# Development Environment Configuration Template
+# Copy this file to application-dev.properties and update with your local settings
+
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/carshop
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
+# JWT Configuration
+jwt.secret=your-development-secret-key-minimum-256-bits-for-security
+
+# Development Settings
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+logging.level.com.carshop=DEBUG
