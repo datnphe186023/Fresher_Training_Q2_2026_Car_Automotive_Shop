@@ -1,6 +1,7 @@
 package com.carshop.service;
 
 import com.carshop.entity.Customer;
+import com.carshop.exception.ResourceNotFoundException;
 import com.carshop.repository.CustomerRepository;
 import com.carshop.util.PhoneNumberValidator;
 import lombok.RequiredArgsConstructor;
@@ -107,5 +108,20 @@ public class CustomerService {
         }
         
         return customer;
+    }
+
+    /**
+     * Adds loyalty points to a customer's balance.
+     *
+     * @param customerId the customer ID
+     * @param points the number of points to add (must be >= 0)
+     */
+    @Transactional
+    public void addLoyaltyPoints(Long customerId, int points) {
+        log.info("Adding {} loyalty points to customer id: {}", points, customerId);
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        customer.setLoyaltyPoints(customer.getLoyaltyPoints() + points);
+        customerRepository.save(customer);
     }
 }

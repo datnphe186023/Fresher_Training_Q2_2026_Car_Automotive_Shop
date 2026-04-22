@@ -1,5 +1,6 @@
 package com.carshop.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -42,6 +43,13 @@ public class Customer {
     
     @Column(length = 100)
     private String name;
+
+    @Column(length = 255)
+    private String address;
+
+    @Column(name = "loyalty_points", nullable = false)
+    @Builder.Default
+    private Integer loyaltyPoints = 0;
     
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -50,6 +58,11 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    @JsonManagedReference("customer-vehicles")
+    private List<Vehicle> vehicles = new ArrayList<>();
     
     /**
      * Helper method to add a booking to this customer

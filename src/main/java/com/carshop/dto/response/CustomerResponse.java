@@ -34,6 +34,16 @@ public class CustomerResponse {
      * Customer name
      */
     private String name;
+
+    /**
+     * Customer address
+     */
+    private String address;
+
+    /**
+     * Customer loyalty points balance
+     */
+    private Integer loyaltyPoints;
     
     /**
      * Customer record creation timestamp

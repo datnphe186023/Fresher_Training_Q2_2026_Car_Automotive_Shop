@@ -2,6 +2,8 @@ package com.carshop.repository;
 
 import com.carshop.entity.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -30,4 +32,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * @return Optional containing the customer if found, empty otherwise
      */
     Optional<Customer> findByEmail(String email);
+
+    /**
+     * Find a customer by phone number with vehicles eagerly fetched.
+     */
+    @Query("SELECT c FROM Customer c LEFT JOIN FETCH c.vehicles WHERE c.phoneNumber = :phoneNumber")
+    Optional<Customer> findByPhoneNumberWithVehicles(@Param("phoneNumber") String phoneNumber);
 }

@@ -84,7 +84,10 @@ public class SecurityConfig {
                 
                 // Public booking tracking endpoint (Requirement 17.8)
                 .requestMatchers(HttpMethod.GET, "/api/bookings/track").permitAll()
-                
+
+                // Public endpoints for guest vehicle/history/loyalty lookup
+                .requestMatchers("/api/public/**").permitAll()
+
                 // Protected service management endpoints (Requirement 17.9)
                 .requestMatchers(HttpMethod.POST, "/api/services/**").hasAnyRole("ADMIN", "STAFF")
                 .requestMatchers(HttpMethod.PUT, "/api/services/**").hasAnyRole("ADMIN", "STAFF")
@@ -94,6 +97,15 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAnyRole("ADMIN", "STAFF")
                 .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAnyRole("ADMIN", "STAFF")
                 .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAnyRole("ADMIN", "STAFF")
+
+                // Vehicle endpoints
+                .requestMatchers(HttpMethod.GET, "/api/vehicles/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/vehicles/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/vehicles/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.DELETE, "/api/vehicles/**").hasRole("ADMIN")
+
+                // Booking status update
+                .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/status").hasAnyRole("ADMIN", "STAFF")
                 
                 // All other endpoints require authentication (Requirement 17.10)
                 .anyRequest().authenticated()

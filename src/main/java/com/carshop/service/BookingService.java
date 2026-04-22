@@ -6,6 +6,8 @@ import com.carshop.entity.Booking;
 import com.carshop.entity.BookingStatus;
 import com.carshop.entity.Customer;
 import com.carshop.entity.Service;
+import com.carshop.exception.DuplicateResourceException;
+import com.carshop.exception.ResourceNotFoundException;
 import com.carshop.mapper.BookingMapper;
 import com.carshop.repository.BookingRepository;
 import com.carshop.repository.ServiceRepository;
@@ -16,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -156,5 +160,33 @@ public class BookingService {
                 .stream()
                 .map(bookingMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Updates the status of a booking. When status is COMPLETED, awards loyalty points.
+     *
+     * @param bookingId the booking ID
+     * @param newStatus the new status to set
+     * @return updated BookingResponse
+     */
+    @Transactional
+    public BookingResponse updateBookingStatus(Long bookingId, BookingStatus newStatus) {
+        log.info("Updating booking {} status to {}", bookingId, newStatus);
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (newStatus == BookingStatus.COMPLETED) {
+            if (booking.getStatus() == BookingStatus.COMPLETED) {
+                throw new DuplicateResourceException("Booking is already completed");
+            }
+            int points = booking.getService().getBasePrice()
+                    .divide(BigDecimal.valueOf(10000), RoundingMode.FLOOR).intValue();
+            customerService.addLoyaltyPoints(booking.getCustomer().getId(), points);
+            log.info("Awarded {} loyalty points to customer {}", points, booking.getCustomer().getId());
+        }
+
+        booking.setStatus(newStatus);
+        return bookingMapper.toResponse(bookingRepository.save(booking));
     }
 }

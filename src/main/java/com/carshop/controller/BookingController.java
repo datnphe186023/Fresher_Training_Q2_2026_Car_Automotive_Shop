@@ -3,12 +3,14 @@ package com.carshop.controller;
 import com.carshop.dto.request.CreateBookingRequest;
 import com.carshop.dto.response.BookingResponse;
 import com.carshop.dto.response.ErrorResponse;
+import com.carshop.entity.BookingStatus;
 import com.carshop.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -141,10 +143,19 @@ public class BookingController {
     }
     
     /**
+     * Updates the status of a booking. Requires ADMIN or STAFF role.
+     * When status is COMPLETED, loyalty points are awarded to the customer.
+     */
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public ResponseEntity<BookingResponse> updateBookingStatus(
+            @PathVariable Long id,
+            @RequestBody BookingStatus status) {
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
+    }
+
+    /**
      * Handles validation errors for request body.
-     * 
-     * @param ex the validation exception
-     * @return ResponseEntity with error details and HTTP 400
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationExceptions(MethodArgumentNotValidException ex) {

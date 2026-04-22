@@ -26,6 +26,8 @@ public class CustomerMapper {
                 .phoneNumber(customer.getPhoneNumber())
                 .email(customer.getEmail())
                 .name(customer.getName())
+                .address(customer.getAddress())
+                .loyaltyPoints(customer.getLoyaltyPoints())
                 .createdAt(customer.getCreatedAt())
                 .build();
     }
