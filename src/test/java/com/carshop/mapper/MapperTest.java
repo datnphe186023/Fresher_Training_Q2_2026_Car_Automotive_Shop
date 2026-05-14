@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,6 +23,8 @@ class MapperTest {
     private CategoryMapper categoryMapper;
     private ServiceMapper serviceMapper;
     private CustomerMapper customerMapper;
+    private TimeSlotMapper timeSlotMapper;
+    private VehicleMapper vehicleMapper;
     private BookingMapper bookingMapper;
     
     @BeforeEach
@@ -32,7 +33,9 @@ class MapperTest {
         categoryMapper = new CategoryMapper();
         serviceMapper = new ServiceMapper(categoryMapper);
         customerMapper = new CustomerMapper();
-        bookingMapper = new BookingMapper(customerMapper, serviceMapper);
+        timeSlotMapper = new TimeSlotMapper();
+        vehicleMapper = new VehicleMapper();
+        bookingMapper = new BookingMapper(customerMapper, serviceMapper, timeSlotMapper, vehicleMapper);
     }
     
     @Test

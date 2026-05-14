@@ -1,0 +1,12 @@
+package com.carshop.entity;
+
+public enum NotificationType {
+    INVOICE_ISSUED,
+    PAYMENT_RECEIVED,
+    PAYMENT_FAILED,
+    BOOKING_COMPLETED,
+    OVERDUE_INVOICE_REMINDER,
+    APPOINTMENT_REMINDER,
+    LOW_STOCK_ALERT,
+    DAILY_SALES_SUMMARY
+}

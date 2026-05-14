@@ -2,7 +2,6 @@ package com.carshop.util;
 
 import net.jqwik.api.*;
 import net.jqwik.api.constraints.IntRange;
-import net.jqwik.api.constraints.StringLength;
 
 import static org.junit.jupiter.api.Assertions.*;
 

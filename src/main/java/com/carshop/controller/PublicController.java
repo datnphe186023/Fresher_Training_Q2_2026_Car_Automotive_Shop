@@ -1,11 +1,13 @@
 package com.carshop.controller;
 
 import com.carshop.dto.response.LoyaltyResponse;
+import com.carshop.dto.response.InvoiceResponse;
 import com.carshop.dto.response.ServiceHistoryResponse;
 import com.carshop.dto.response.VehicleResponse;
 import com.carshop.entity.Customer;
 import com.carshop.exception.ResourceNotFoundException;
 import com.carshop.repository.CustomerRepository;
+import com.carshop.service.InvoiceService;
 import com.carshop.service.ServiceHistoryService;
 import com.carshop.service.VehicleService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class PublicController {
     private final VehicleService vehicleService;
     private final ServiceHistoryService serviceHistoryService;
     private final CustomerRepository customerRepository;
+    private final InvoiceService invoiceService;
 
     @GetMapping("/vehicles")
     public ResponseEntity<List<VehicleResponse>> getVehiclesByPhone(
@@ -49,5 +52,17 @@ public class PublicController {
                 .phoneNumber(customer.getPhoneNumber())
                 .loyaltyPoints(customer.getLoyaltyPoints())
                 .build());
+    }
+
+    @GetMapping("/invoices/booking/{bookingReference}")
+    public ResponseEntity<InvoiceResponse> getInvoiceByBookingReference(
+            @PathVariable String bookingReference) {
+        return ResponseEntity.ok(invoiceService.getInvoiceByBookingReference(bookingReference));
+    }
+
+    @GetMapping("/invoices/customer")
+    public ResponseEntity<List<InvoiceResponse>> getInvoicesByCustomerPhone(
+            @RequestParam String phoneNumber) {
+        return ResponseEntity.ok(invoiceService.getInvoicesByCustomerPhone(phoneNumber));
     }
 }

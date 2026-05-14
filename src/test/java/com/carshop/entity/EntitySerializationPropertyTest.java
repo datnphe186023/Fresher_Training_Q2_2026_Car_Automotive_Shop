@@ -3,7 +3,6 @@ package com.carshop.entity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.jqwik.api.*;
-import net.jqwik.api.arbitraries.StringArbitrary;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

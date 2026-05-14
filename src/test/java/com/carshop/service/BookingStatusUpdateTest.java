@@ -7,7 +7,6 @@ import com.carshop.exception.ResourceNotFoundException;
 import com.carshop.mapper.BookingMapper;
 import com.carshop.repository.BookingRepository;
 import com.carshop.repository.ServiceRepository;
-import com.carshop.util.PhoneNumberValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

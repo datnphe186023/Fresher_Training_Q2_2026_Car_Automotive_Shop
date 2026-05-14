@@ -3,6 +3,7 @@ package com.carshop.dto.response;
 import com.carshop.entity.BookingStatus;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -45,9 +46,14 @@ public class BookingResponse {
      * Current booking status
      */
     private BookingStatus status;
-    
-    /**
-     * Booking creation timestamp
-     */
+
+    private TimeSlotResponse timeSlot;
+
+    private VehicleResponse vehicle;
+
+    private BigDecimal discountPercent;
+
+    private BigDecimal totalPrice;
+
     private LocalDateTime createdAt;
 }

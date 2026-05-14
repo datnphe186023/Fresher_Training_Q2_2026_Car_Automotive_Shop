@@ -1,6 +1,7 @@
 package com.carshop.controller;
 
 import com.carshop.dto.request.CreateBookingRequest;
+import com.carshop.dto.request.UpdateBookingStatusRequest;
 import com.carshop.dto.response.BookingResponse;
 import com.carshop.dto.response.ErrorResponse;
 import com.carshop.entity.BookingStatus;
@@ -8,6 +9,8 @@ import com.carshop.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -143,15 +146,29 @@ public class BookingController {
     }
     
     /**
+     * Lists bookings with optional filters. Requires ADMIN or STAFF role.
+     */
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    public ResponseEntity<Page<BookingResponse>> getBookings(
+            @RequestParam(required = false) BookingStatus status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        return ResponseEntity.ok(bookingService.getBookingsWithFilters(status, startDate, endDate, phoneNumber, page, size));
+    }
+
+    /**
      * Updates the status of a booking. Requires ADMIN or STAFF role.
-     * When status is COMPLETED, loyalty points are awarded to the customer.
      */
     @PatchMapping("/{id}/status")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     public ResponseEntity<BookingResponse> updateBookingStatus(
             @PathVariable Long id,
-            @RequestBody BookingStatus status) {
-        return ResponseEntity.ok(bookingService.updateBookingStatus(id, status));
+            @Valid @RequestBody UpdateBookingStatusRequest request) {
+        return ResponseEntity.ok(bookingService.updateBookingStatus(id, request.getStatus()));
     }
 
     /**

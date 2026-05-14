@@ -37,4 +37,12 @@ public class CreateBookingRequest {
     @NotNull(message = "Booking date is required")
     @Future(message = "Booking date must be in the future")
     private LocalDateTime bookingDate;
+
+    private Long timeSlotId;
+
+    private Long vehicleId;
+
+    @jakarta.validation.constraints.DecimalMin(value = "0.0", message = "Discount percent cannot be negative")
+    @jakarta.validation.constraints.DecimalMax(value = "100.0", message = "Discount percent cannot exceed 100")
+    private java.math.BigDecimal discountPercent;
 }

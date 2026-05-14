@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -180,6 +179,77 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
     
+    /**
+     * Handle InvalidStatusTransitionException (422 Unprocessable Entity)
+     */
+    @ExceptionHandler(InvalidStatusTransitionException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidStatusTransitionException(
+            InvalidStatusTransitionException ex,
+            HttpServletRequest request) {
+
+        log.error("Invalid status transition: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.UNPROCESSABLE_ENTITY.value())
+                .error(HttpStatus.UNPROCESSABLE_ENTITY.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(errorResponse);
+    }
+
+    /**
+     * Handle TimeSlotConflictException (409 Conflict)
+     * Thrown when trying to book an already-booked time slot
+     */
+    @ExceptionHandler(TimeSlotConflictException.class)
+    public ResponseEntity<ErrorResponse> handleTimeSlotConflictException(
+            TimeSlotConflictException ex,
+            HttpServletRequest request) {
+
+        log.error("Time slot conflict: {}", ex.getMessage());
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    /**
+     * Handle InventoryException (400/409 Bad Request or Conflict)
+     * Thrown when inventory operations are invalid
+     */
+    @ExceptionHandler(InventoryException.class)
+    public ResponseEntity<ErrorResponse> handleInventoryException(
+            InventoryException ex,
+            HttpServletRequest request) {
+
+        log.error("Inventory error: {}", ex.getMessage());
+
+        // Determine status based on message
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        if (ex.getMessage() != null && ex.getMessage().contains("Cannot delete")) {
+            status = HttpStatus.CONFLICT;
+        }
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(status).body(errorResponse);
+    }
+
     /**
      * Handle InvalidRoleException (400 Bad Request)
      */

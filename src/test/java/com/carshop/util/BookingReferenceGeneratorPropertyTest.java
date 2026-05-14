@@ -4,11 +4,8 @@ import net.jqwik.api.*;
 import net.jqwik.api.constraints.IntRange;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 

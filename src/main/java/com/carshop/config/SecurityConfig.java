@@ -24,7 +24,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Security configuration for the Car Shop application.
@@ -106,6 +105,24 @@ public class SecurityConfig {
 
                 // Booking status update
                 .requestMatchers(HttpMethod.PATCH, "/api/bookings/*/status").hasAnyRole("ADMIN", "STAFF")
+
+                // Time slot management
+                .requestMatchers(HttpMethod.GET, "/api/time-slots/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/time-slots/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.PUT, "/api/time-slots/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.DELETE, "/api/time-slots/**").hasRole("ADMIN")
+
+                // Supplier management
+                .requestMatchers(HttpMethod.GET, "/api/suppliers/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/suppliers/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/suppliers/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/suppliers/**").hasRole("ADMIN")
+
+                // Product management
+                .requestMatchers(HttpMethod.GET, "/api/products/**").hasAnyRole("ADMIN", "STAFF")
+                .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
                 
                 // All other endpoints require authentication (Requirement 17.10)
                 .anyRequest().authenticated()

@@ -24,7 +24,7 @@ function getUsernameFromToken(): string {
   }
 }
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard = () => {
   const navigate = useNavigate()
   const username = getUsernameFromToken()
 
